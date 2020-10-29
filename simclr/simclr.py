@@ -494,9 +494,12 @@ def main():
     path = os.environ["RESULT_DIR"]
     config = yaml.load(open(path+"/_submitted_code/simclr/config.yaml", "r"), Loader=yaml.FullLoader)
     dataset = DataSetWrapper(config['batch_size'], **config['dataset'])
+    model = SimCLR(dataset, config)
+    
+    edt_m = FabricModel(model, getDatasets, F.nll_loss, optimizer, driver_logger=EDTLoggerCallback())
+    edt_m.train(args.epochs, args.batchsize, args.numWorker)
 
-    simclr = SimCLR(dataset, config)
-    simclr.train()
+    
 
 
 if __name__ == "__main__":
